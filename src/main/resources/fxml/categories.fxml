@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.controller.CategoriesController"
+      styleClass="content-area"
+      spacing="20">
+    
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+
+    <!-- Заголовок -->
+    <Label text="Управление категориями" styleClass="page-title"/>
+
+    <!-- Форма добавления категории -->
+    <VBox spacing="15" styleClass="form-container">
+        <Label text="Добавить новую категорию" styleClass="section-title"/>
+        
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <TextField fx:id="categoryNameField" promptText="Название категории" prefWidth="250"/>
+            <ColorPicker fx:id="categoryColorPicker" prefWidth="100"/>
+            <ComboBox fx:id="categoryTypeCombo" prefWidth="150"/>
+            <Button text="Добавить" onAction="#onAddCategory" styleClass="add-button"/>
+        </HBox>
+    </VBox>
+
+    <!-- Список категорий -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="categories-scroll">
+        <VBox spacing="30">
+            <!-- Категории доходов -->
+            <VBox spacing="10">
+                <Label text="Категории доходов" styleClass="section-title"/>
+                <VBox fx:id="incomeCategoriesContainer" spacing="5"/>
+            </VBox>
+            
+            <!-- Категории расходов -->
+            <VBox spacing="10">
+                <Label text="Категории расходов" styleClass="section-title"/>
+                <VBox fx:id="expenseCategoriesContainer" spacing="5"/>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+
+</VBox>
+
+

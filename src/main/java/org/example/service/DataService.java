@@ -5,18 +5,40 @@ import javafx.collections.ObservableList;
 import org.example.model.Category;
 import org.example.model.Transaction;
 import org.example.model.TransactionType;
+import org.example.repository.CategoryRepository;
+import org.example.repository.TransactionRepository;
+import org.example.repository.impl.CategoryRepositoryImpl;
+import org.example.repository.impl.TransactionRepositoryImpl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * Сервис для работы с данными приложения
+ * Использует репозитории для работы с БД
+ */
 public class DataService {
     private static DataService instance;
     private ObservableList<Transaction> transactions;
     private ObservableList<Category> categories;
+    
+    private final TransactionRepository transactionRepository;
+    private final CategoryRepository categoryRepository;
+    
+    // Кэш категорий для быстрого доступа по ID
+    private Map<Long, Category> categoryCache;
 
     private DataService() {
+        transactionRepository = new TransactionRepositoryImpl();
+        categoryRepository = new CategoryRepositoryImpl();
+        categoryCache = new HashMap<>();
+        
         transactions = FXCollections.observableArrayList();
         categories = FXCollections.observableArrayList();
-        initializeDefaultData();
+        
+        loadData();
     }
 
     public static DataService getInstance() {
@@ -26,28 +48,34 @@ public class DataService {
         return instance;
     }
 
-    private void initializeDefaultData() {
-        // Создаём категории доходов
-        Category salary = new Category("Зарплатная плата", "#00FFA3", TransactionType.INCOME);
-        Category bonus = new Category("Премия", "#00D9FF", TransactionType.INCOME);
-        Category scholarship = new Category("Стипендия", "#ADFF00", TransactionType.INCOME);
+    /**
+     * Загрузка данных из БД
+     */
+    private void loadData() {
+        // Загружаем категории
+        List<Category> loadedCategories = categoryRepository.findAll();
+        categories.setAll(loadedCategories);
         
-        // Создаём категории расходов
-        Category food = new Category("Продукты питания", "#00FFA3", TransactionType.EXPENSE);
-        Category clothes = new Category("Одежда", "#00D9FF", TransactionType.EXPENSE);
-        Category digital = new Category("Цифровые товары", "#FFEB3B", TransactionType.EXPENSE);
-
-        categories.addAll(salary, bonus, scholarship, food, clothes, digital);
-
-        // Создаём примеры транзакций
-        transactions.add(new Transaction("Получена зарплата", 50000, LocalDateTime.now().minusDays(5), salary, TransactionType.INCOME));
-        transactions.add(new Transaction("Премия за проект", 15000, LocalDateTime.now().minusDays(10), bonus, TransactionType.INCOME));
-        transactions.add(new Transaction("Стипендия", 3000, LocalDateTime.now().minusDays(1), scholarship, TransactionType.INCOME));
+        // Обновляем кэш
+        categoryCache.clear();
+        for (Category category : loadedCategories) {
+            categoryCache.put(category.getId(), category);
+        }
         
-        transactions.add(new Transaction("Покупка продуктов в супермаркете", -3500, LocalDateTime.now().minusDays(2), food, TransactionType.EXPENSE));
-        transactions.add(new Transaction("Новая куртка", -8000, LocalDateTime.now().minusDays(4), clothes, TransactionType.EXPENSE));
-        transactions.add(new Transaction("Подписка Netflix", -990, LocalDateTime.now().minusDays(7), digital, TransactionType.EXPENSE));
-        transactions.add(new Transaction("Покупка в магазине", -2100, LocalDateTime.now().minusDays(3), food, TransactionType.EXPENSE));
+        // Загружаем транзакции
+        List<Transaction> loadedTransactions = transactionRepository.findAll();
+        
+        // Связываем транзакции с категориями
+        for (Transaction transaction : loadedTransactions) {
+            if (transaction.getCategoryId() != null) {
+                Category category = categoryCache.get(transaction.getCategoryId());
+                if (category != null) {
+                    transaction.setCategory(category);
+                }
+            }
+        }
+        
+        transactions.setAll(loadedTransactions);
     }
 
     public ObservableList<Transaction> getTransactions() {
@@ -59,19 +87,39 @@ public class DataService {
     }
 
     public void addTransaction(Transaction transaction) {
+        transactionRepository.save(transaction);
         transactions.add(transaction);
     }
 
     public void removeTransaction(Transaction transaction) {
+        transactionRepository.delete(transaction);
         transactions.remove(transaction);
     }
 
     public void addCategory(Category category) {
+        categoryRepository.save(category);
         categories.add(category);
+        categoryCache.put(category.getId(), category);
     }
 
     public void removeCategory(Category category) {
+        categoryRepository.delete(category);
         categories.remove(category);
+        categoryCache.remove(category.getId());
+    }
+    
+    /**
+     * Получить категорию по ID
+     */
+    public Category getCategoryById(Long id) {
+        return categoryCache.get(id);
+    }
+    
+    /**
+     * Перезагрузить данные из БД
+     */
+    public void reload() {
+        loadData();
     }
 }
 

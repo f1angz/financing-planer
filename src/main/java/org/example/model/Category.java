@@ -1,6 +1,7 @@
 package org.example.model;
 
 public class Category {
+    private Long id;
     private String name;
     private String color;
     private TransactionType type;
@@ -9,6 +10,21 @@ public class Category {
         this.name = name;
         this.color = color;
         this.type = type;
+    }
+
+    public Category(Long id, String name, String color, TransactionType type) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.type = type;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
