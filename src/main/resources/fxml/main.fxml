@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.controller.MainController"
+            fx:id="mainContainer"
+            styleClass="root">
+
+    <!-- Боковое меню -->
+    <left>
+        <VBox fx:id="sideMenu" styleClass="side-menu" spacing="10" prefWidth="250">
+            <padding>
+                <Insets top="20" right="10" bottom="20" left="10"/>
+            </padding>
+            
+            <!-- Заголовок приложения -->
+            <Label text="Finance Planner" styleClass="app-title">
+                <VBox.margin>
+                    <Insets bottom="30"/>
+                </VBox.margin>
+            </Label>
+
+            <!-- Кнопки меню -->
+            <Button fx:id="homeButton" text="🏠  Главная" onAction="#loadHomeView" styleClass="menu-button" maxWidth="Infinity"/>
+            <Button fx:id="categoriesButton" text="📁  Категории" onAction="#loadCategoriesView" styleClass="menu-button" maxWidth="Infinity"/>
+            <Button fx:id="statisticsButton" text="📊  Статистика" onAction="#loadStatisticsView" styleClass="menu-button" maxWidth="Infinity"/>
+            <Button fx:id="settingsButton" text="⚙️  Настройки" onAction="#loadSettingsView" styleClass="menu-button" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <!-- Основной контент -->
+    <center>
+        <!-- Здесь будет загружаться содержимое страниц -->
+    </center>
+
+</BorderPane>
+
+

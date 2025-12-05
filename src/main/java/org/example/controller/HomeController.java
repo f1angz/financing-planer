@@ -3,15 +3,20 @@ package org.example.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
+import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.example.model.Transaction;
 import org.example.model.TransactionType;
 import org.example.service.DataService;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,6 +80,11 @@ public class HomeController {
         Map<String, Double> expenseByCategory = new HashMap<>();
         
         for (Transaction transaction : dataService.getTransactions()) {
+            // Проверяем, что категория существует
+            if (transaction.getCategory() == null) {
+                continue;
+            }
+            
             if (transaction.getType() == TransactionType.INCOME) {
                 String category = transaction.getCategory().getName();
                 incomeByCategory.put(category, 
@@ -142,6 +152,44 @@ public class HomeController {
         // Здесь можно добавить фильтрацию по периоду
         loadChartData();
         loadTransactions();
+    }
+
+    @FXML
+    private void onAddTransaction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/add_transaction_dialog.fxml"));
+            VBox dialogContent = loader.load();
+            
+            AddTransactionController controller = loader.getController();
+            
+            // Создаём модальное окно
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Добавить транзакцию");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            
+            Scene scene = new Scene(dialogContent);
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            dialogStage.setScene(scene);
+            
+            controller.setDialogStage(dialogStage);
+            
+            // Показываем диалог и ждём закрытия
+            dialogStage.showAndWait();
+            
+            // Если транзакция была сохранена, обновляем данные
+            if (controller.isSaved()) {
+                loadChartData();
+                loadTransactions();
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText(null);
+            alert.setContentText("Не удалось открыть форму добавления транзакции");
+            alert.showAndWait();
+        }
     }
 }
 

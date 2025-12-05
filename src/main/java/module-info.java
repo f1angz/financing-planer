@@ -1,6 +1,8 @@
 module org.example.financeplanner {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
+    requires com.zaxxer.hikari;
     
     opens org.example to javafx.fxml;
     opens org.example.controller to javafx.fxml;
@@ -9,6 +11,9 @@ module org.example.financeplanner {
     exports org.example;
     exports org.example.controller;
     exports org.example.model;
+    exports org.example.service;
+    exports org.example.repository;
+    exports org.example.config;
 }
 
 

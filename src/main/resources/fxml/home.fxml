@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.PieChart?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.example.controller.HomeController"
+           styleClass="content-area">
+
+<VBox spacing="20">
+    
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+
+    <!-- Заголовок -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Обзор финансов" styleClass="page-title"/>
+    </HBox>
+
+    <!-- Фильтры периода -->
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <ToggleButton fx:id="yearButton" text="Год" onAction="#onPeriodChanged" styleClass="period-toggle">
+            <toggleGroup>
+                <ToggleGroup fx:id="periodToggle"/>
+            </toggleGroup>
+        </ToggleButton>
+        <ToggleButton fx:id="monthButton" text="Месяц" toggleGroup="$periodToggle" onAction="#onPeriodChanged" styleClass="period-toggle"/>
+        <ToggleButton fx:id="dayButton" text="День" toggleGroup="$periodToggle" onAction="#onPeriodChanged" styleClass="period-toggle"/>
+        
+        <TextField fx:id="yearField" text="2025" prefWidth="100" styleClass="year-field"/>
+    </HBox>
+
+    <!-- Графики доходов и расходов -->
+    <HBox spacing="30" VBox.vgrow="ALWAYS">
+        <!-- Доходы -->
+        <VBox spacing="15" styleClass="chart-container" HBox.hgrow="ALWAYS">
+            <Label text="Доходы" styleClass="section-title"/>
+            <PieChart fx:id="incomeChart" VBox.vgrow="ALWAYS" styleClass="pie-chart"/>
+        </VBox>
+
+        <!-- Расходы -->
+        <VBox spacing="15" styleClass="chart-container" HBox.hgrow="ALWAYS">
+            <Label text="Расходы" styleClass="section-title"/>
+            <PieChart fx:id="expenseChart" VBox.vgrow="ALWAYS" styleClass="pie-chart"/>
+        </VBox>
+    </HBox>
+
+    <!-- Последние операции -->
+    <VBox spacing="15" styleClass="transactions-section">
+        <Label text="Последние операции" styleClass="section-title"/>
+        
+        <!-- Заголовки таблицы -->
+        <HBox spacing="20" styleClass="transaction-header">
+            <Label text="Описание" styleClass="table-header" prefWidth="300"/>
+            <Label text="Дата" styleClass="table-header" prefWidth="150"/>
+            <Label text="Сумма" styleClass="table-header" prefWidth="120"/>
+        </HBox>
+        
+        <!-- Список транзакций -->
+        <ScrollPane fitToWidth="true" styleClass="transactions-scroll">
+            <VBox fx:id="transactionsContainer" spacing="5"/>
+        </ScrollPane>
+    </VBox>
+
+</VBox>
+
+<!-- Кнопка добавления транзакции (плавающая в правом нижнем углу) -->
+<Button text="+" onAction="#onAddTransaction" styleClass="fab-button">
+    <StackPane.alignment>
+        <javafx.geometry.Pos fx:constant="BOTTOM_RIGHT"/>
+    </StackPane.alignment>
+    <StackPane.margin>
+        <Insets bottom="30" right="30"/>
+    </StackPane.margin>
+</Button>
+
+</StackPane>
+
+
