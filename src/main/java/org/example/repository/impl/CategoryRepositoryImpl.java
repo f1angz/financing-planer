@@ -3,7 +3,7 @@ package org.example.repository.impl;
 import org.example.database.DatabaseManager;
 import org.example.model.Category;
 import org.example.model.TransactionType;
-import org.example.repository.CategoryRepository;
+import org.example.repository.CategoryRepositoryExt;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.Optional;
  * Реализация репозитория категорий для работы с БД через JDBC
  * Работает с SQLite и PostgreSQL
  */
-public class CategoryRepositoryImpl implements CategoryRepository {
+public class CategoryRepositoryImpl implements CategoryRepositoryExt {
     
     private final DatabaseManager databaseManager;
     
@@ -24,21 +24,24 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     
     @Override
     public void save(Category category) {
-        String sql = "INSERT INTO categories (name, color, type) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO categories (name, color, type, user_id) VALUES (?, ?, ?, ?)";
         
         try (Connection conn = databaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, category.getName());
             pstmt.setString(2, category.getColor());
             pstmt.setString(3, category.getType().name());
+            pstmt.setLong(4, category.getUserId());
             
             pstmt.executeUpdate();
             
-            // Получаем сгенерированный ID
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                category.setId(rs.getLong(1));
+            // Получаем последний вставленный ID (для SQLite)
+            try (Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()")) {
+                if (rs.next()) {
+                    category.setId(rs.getLong(1));
+                }
             }
             
         } catch (SQLException e) {
@@ -49,7 +52,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     
     @Override
     public void update(Category category) {
-        String sql = "UPDATE categories SET name = ?, color = ?, type = ? WHERE id = ?";
+        String sql = "UPDATE categories SET name = ?, color = ?, type = ?, user_id = ? WHERE id = ?";
         
         try (Connection conn = databaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -57,7 +60,8 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             pstmt.setString(1, category.getName());
             pstmt.setString(2, category.getColor());
             pstmt.setString(3, category.getType().name());
-            pstmt.setLong(4, category.getId());
+            pstmt.setLong(4, category.getUserId());
+            pstmt.setLong(5, category.getId());
             
             pstmt.executeUpdate();
             
@@ -141,12 +145,36 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         }
     }
     
+    @Override
+    public List<Category> findByUserId(Long userId) {
+        List<Category> categories = new ArrayList<>();
+        String sql = "SELECT * FROM categories WHERE user_id = ? ORDER BY id";
+        
+        try (Connection conn = databaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setLong(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                categories.add(mapResultSetToCategory(rs));
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Error finding categories by user id: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return categories;
+    }
+    
     private Category mapResultSetToCategory(ResultSet rs) throws SQLException {
         return new Category(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getString("color"),
-            TransactionType.valueOf(rs.getString("type"))
+            TransactionType.valueOf(rs.getString("type")),
+            rs.getLong("user_id")
         );
     }
 }

@@ -37,6 +37,7 @@ public class AddTransactionController {
 
     private DataService dataService;
     private Stage dialogStage;
+    private Runnable closeCallback;
     private boolean saved = false;
 
     @FXML
@@ -144,7 +145,7 @@ public class AddTransactionController {
             dataService.addTransaction(transaction);
             
             saved = true;
-            dialogStage.close();
+            closeDialog();
             
         } catch (Exception e) {
             showError("Ошибка", "Не удалось сохранить транзакцию: " + e.getMessage());
@@ -153,7 +154,15 @@ public class AddTransactionController {
 
     @FXML
     private void onCancel() {
-        dialogStage.close();
+        closeDialog();
+    }
+    
+    private void closeDialog() {
+        if (closeCallback != null) {
+            closeCallback.run();
+        } else if (dialogStage != null) {
+            dialogStage.close();
+        }
     }
 
     private boolean validateInput() {
@@ -198,6 +207,10 @@ public class AddTransactionController {
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
+    }
+    
+    public void setCloseCallback(Runnable callback) {
+        this.closeCallback = callback;
     }
 
     public boolean isSaved() {

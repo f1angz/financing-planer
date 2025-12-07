@@ -22,10 +22,10 @@
         <Label text="Добавить новую категорию" styleClass="section-title"/>
         
         <HBox spacing="15" alignment="CENTER_LEFT">
-            <TextField fx:id="categoryNameField" promptText="Название категории" prefWidth="250"/>
-            <ColorPicker fx:id="categoryColorPicker" prefWidth="100"/>
-            <ComboBox fx:id="categoryTypeCombo" prefWidth="150"/>
-            <Button text="Добавить" onAction="#onAddCategory" styleClass="add-button"/>
+            <TextField fx:id="categoryNameField" promptText="Название категории" prefWidth="250" prefHeight="40"/>
+            <ColorPicker fx:id="categoryColorPicker" prefWidth="100" prefHeight="40"/>
+            <ComboBox fx:id="categoryTypeCombo" prefWidth="150" prefHeight="40"/>
+            <Button text="Добавить" onAction="#onAddCategory" styleClass="add-button" prefHeight="40"/>
         </HBox>
     </VBox>
 

@@ -3,7 +3,7 @@ package org.example.repository.impl;
 import org.example.database.DatabaseManager;
 import org.example.model.Transaction;
 import org.example.model.TransactionType;
-import org.example.repository.TransactionRepository;
+import org.example.repository.TransactionRepositoryExt;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import java.util.Optional;
  * Реализация репозитория транзакций для работы с БД через JDBC
  * Работает с SQLite и PostgreSQL
  */
-public class TransactionRepositoryImpl implements TransactionRepository {
+public class TransactionRepositoryImpl implements TransactionRepositoryExt {
     
     private final DatabaseManager databaseManager;
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -27,40 +27,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     
     @Override
     public void save(Transaction transaction) {
-        String sql = "INSERT INTO transactions (description, amount, date, category_id, type) VALUES (?, ?, ?, ?, ?)";
-        
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
-            pstmt.setString(1, transaction.getDescription());
-            pstmt.setDouble(2, transaction.getAmount());
-            pstmt.setString(3, transaction.getDate().format(DATE_FORMATTER));
-            
-            if (transaction.getCategoryId() != null) {
-                pstmt.setLong(4, transaction.getCategoryId());
-            } else {
-                pstmt.setNull(4, Types.INTEGER);
-            }
-            
-            pstmt.setString(5, transaction.getType().name());
-            
-            pstmt.executeUpdate();
-            
-            // Получаем сгенерированный ID
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                transaction.setId(rs.getLong(1));
-            }
-            
-        } catch (SQLException e) {
-            System.err.println("Error saving transaction: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-    
-    @Override
-    public void update(Transaction transaction) {
-        String sql = "UPDATE transactions SET description = ?, amount = ?, date = ?, category_id = ?, type = ? WHERE id = ?";
+        String sql = "INSERT INTO transactions (description, amount, date, category_id, type, user_id) VALUES (?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = databaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -76,7 +43,44 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             }
             
             pstmt.setString(5, transaction.getType().name());
-            pstmt.setLong(6, transaction.getId());
+            pstmt.setLong(6, transaction.getUserId());
+            
+            pstmt.executeUpdate();
+            
+            // Получаем последний вставленный ID (для SQLite)
+            try (Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()")) {
+                if (rs.next()) {
+                    transaction.setId(rs.getLong(1));
+                }
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Error saving transaction: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void update(Transaction transaction) {
+        String sql = "UPDATE transactions SET description = ?, amount = ?, date = ?, category_id = ?, type = ?, user_id = ? WHERE id = ?";
+        
+        try (Connection conn = databaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, transaction.getDescription());
+            pstmt.setDouble(2, transaction.getAmount());
+            pstmt.setString(3, transaction.getDate().format(DATE_FORMATTER));
+            
+            if (transaction.getCategoryId() != null) {
+                pstmt.setLong(4, transaction.getCategoryId());
+            } else {
+                pstmt.setNull(4, Types.INTEGER);
+            }
+            
+            pstmt.setString(5, transaction.getType().name());
+            pstmt.setLong(6, transaction.getUserId());
+            pstmt.setLong(7, transaction.getId());
             
             pstmt.executeUpdate();
             
@@ -160,6 +164,29 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         }
     }
     
+    @Override
+    public List<Transaction> findByUserId(Long userId) {
+        List<Transaction> transactions = new ArrayList<>();
+        String sql = "SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC";
+        
+        try (Connection conn = databaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setLong(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                transactions.add(mapResultSetToTransaction(rs));
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Error finding transactions by user id: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return transactions;
+    }
+    
     private Transaction mapResultSetToTransaction(ResultSet rs) throws SQLException {
         String dateStr = rs.getString("date");
         LocalDateTime date = LocalDateTime.parse(dateStr, DATE_FORMATTER);
@@ -175,7 +202,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             rs.getDouble("amount"),
             date,
             categoryId,
-            TransactionType.valueOf(rs.getString("type"))
+            TransactionType.valueOf(rs.getString("type")),
+            rs.getLong("user_id")
         );
     }
 }

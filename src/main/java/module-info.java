@@ -5,7 +5,8 @@ module org.example.financeplanner {
     requires com.zaxxer.hikari;
     requires com.sun.jna;
     requires com.sun.jna.platform;
-    
+    requires bcrypt;
+
     opens org.example to javafx.fxml;
     opens org.example.controller to javafx.fxml;
     opens org.example.model to javafx.base;
