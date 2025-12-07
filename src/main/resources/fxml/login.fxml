@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.controller.LoginController"
+            styleClass="root"
+            prefWidth="500" prefHeight="600">
+
+    <center>
+        <VBox spacing="25" alignment="CENTER" styleClass="login-container">
+            <padding>
+                <Insets top="50" right="50" bottom="50" left="50"/>
+            </padding>
+
+            <!-- Лого/Заголовок -->
+            <Label text="Finance Planner" styleClass="login-title"/>
+            <Label text="Авторизация" styleClass="login-subtitle"/>
+
+            <!-- Форма входа -->
+            <VBox spacing="20" maxWidth="350">
+                <!-- Имя пользователя -->
+                <VBox spacing="8">
+                    <Label text="Имя пользователя" styleClass="field-label"/>
+                    <TextField fx:id="usernameField" promptText="Введите имя пользователя" 
+                              styleClass="dialog-field"/>
+                </VBox>
+
+                <!-- Пароль -->
+                <VBox spacing="8">
+                    <Label text="Пароль" styleClass="field-label"/>
+                    <PasswordField fx:id="passwordField" promptText="Введите пароль" 
+                                  styleClass="dialog-field"/>
+                </VBox>
+
+                <!-- Сообщение об ошибке -->
+                <Label fx:id="errorLabel" styleClass="error-label" visible="false" managed="false"/>
+
+                <!-- Кнопка входа -->
+                <Button text="Войти" onAction="#onLogin" 
+                       styleClass="save-button" maxWidth="Infinity" prefHeight="45"/>
+
+                <!-- Разделитель -->
+                <Separator/>
+
+                <!-- Кнопка регистрации -->
+                <HBox spacing="10" alignment="CENTER">
+                    <Label text="Нет аккаунта?" styleClass="field-label"/>
+                    <Hyperlink text="Зарегистрироваться" onAction="#onRegister" 
+                              styleClass="register-link"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>
+

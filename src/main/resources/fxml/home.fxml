@@ -68,13 +68,13 @@
 
 </VBox>
 
-<!-- Кнопка добавления транзакции (плавающая в правом нижнем углу) -->
+<!-- Кнопка добавления транзакции (плавающая в правом верхнем углу) -->
 <Button text="+" onAction="#onAddTransaction" styleClass="fab-button">
     <StackPane.alignment>
-        <javafx.geometry.Pos fx:constant="BOTTOM_RIGHT"/>
+        <javafx.geometry.Pos fx:constant="TOP_RIGHT"/>
     </StackPane.alignment>
     <StackPane.margin>
-        <Insets bottom="30" right="30"/>
+        <Insets top="30" right="30"/>
     </StackPane.margin>
 </Button>
 

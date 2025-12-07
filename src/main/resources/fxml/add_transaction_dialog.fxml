@@ -61,8 +61,8 @@
         <VBox.margin>
             <Insets top="10"/>
         </VBox.margin>
-        <Button text="Отмена" onAction="#onCancel" styleClass="cancel-button" prefWidth="120"/>
-        <Button text="Добавить" onAction="#onSave" styleClass="save-button" prefWidth="120"/>
+        <Button text="Отмена" onAction="#onCancel" styleClass="cancel-button" prefWidth="150"/>
+        <Button text="Добавить" onAction="#onSave" styleClass="save-button" prefWidth="150"/>
     </HBox>
 
 </VBox>

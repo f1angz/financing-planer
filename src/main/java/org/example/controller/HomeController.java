@@ -4,12 +4,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.model.Transaction;
@@ -162,16 +166,48 @@ public class HomeController {
             
             AddTransactionController controller = loader.getController();
             
-            // Создаём модальное окно
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Добавить транзакцию");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            // Создаём затемнённый фон на весь экран
+            StackPane overlay = new StackPane();
+            overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.65);");
+            overlay.setAlignment(Pos.CENTER);
             
-            Scene scene = new Scene(dialogContent);
+            // Добавляем диалог в центр
+            overlay.getChildren().add(dialogContent);
+            
+            // Создаём модальное окно без декораций
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(transactionsContainer.getScene().getWindow());
+            dialogStage.setResizable(false);
+            
+            // Создаем сцену с прозрачным фоном
+            Scene scene = new Scene(overlay);
+            scene.setFill(Color.TRANSPARENT);
             scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            
+            // Убираем стандартные декорации окна
+            dialogStage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
             dialogStage.setScene(scene);
             
+            // Устанавливаем размер ОКНА по размеру главного окна (для затемнения)
+            Stage mainStage = (Stage) transactionsContainer.getScene().getWindow();
+            dialogStage.setWidth(mainStage.getWidth());
+            dialogStage.setHeight(mainStage.getHeight());
+            dialogStage.setX(mainStage.getX());
+            dialogStage.setY(mainStage.getY());
+            
             controller.setDialogStage(dialogStage);
+            
+            // Закрытие по клику на затемнённый фон (но не на сам диалог)
+            overlay.setOnMouseClicked(e -> {
+                // Проверяем, что клик был именно на overlay, а не на диалоге
+                if (e.getTarget() == overlay) {
+                    dialogStage.close();
+                }
+            });
+            
+            // Предотвращаем закрытие при клике на сам диалог
+            dialogContent.setOnMouseClicked(e -> e.consume());
             
             // Показываем диалог и ждём закрытия
             dialogStage.showAndWait();
@@ -182,12 +218,12 @@ public class HomeController {
                 loadTransactions();
             }
             
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Ошибка");
             alert.setHeaderText(null);
-            alert.setContentText("Не удалось открыть форму добавления транзакции");
+            alert.setContentText("Не удалось открыть форму добавления транзакции: " + e.getMessage());
             alert.showAndWait();
         }
     }
