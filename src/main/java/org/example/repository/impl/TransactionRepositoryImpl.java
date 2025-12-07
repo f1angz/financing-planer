@@ -30,7 +30,7 @@ public class TransactionRepositoryImpl implements TransactionRepositoryExt {
         String sql = "INSERT INTO transactions (description, amount, date, category_id, type, user_id) VALUES (?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = databaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, transaction.getDescription());
             pstmt.setDouble(2, transaction.getAmount());
@@ -47,10 +47,12 @@ public class TransactionRepositoryImpl implements TransactionRepositoryExt {
             
             pstmt.executeUpdate();
             
-            // Получаем сгенерированный ID
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                transaction.setId(rs.getLong(1));
+            // Получаем последний вставленный ID (для SQLite)
+            try (Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()")) {
+                if (rs.next()) {
+                    transaction.setId(rs.getLong(1));
+                }
             }
             
         } catch (SQLException e) {

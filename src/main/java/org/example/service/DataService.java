@@ -69,9 +69,9 @@ public class DataService {
             categoryCache.put(category.getId(), category);
         }
         
-        // Если категорий нет, создаём примеры
+        // Если категорий нет, создаём только категории по умолчанию (без транзакций)
         if (categories.isEmpty()) {
-            initializeDefaultData();
+            initializeDefaultCategories();
             // После инициализации перезагружаем категории в кэш
             loadedCategories = categoryRepository.findByUserId(userId);
             categories.setAll(loadedCategories);
@@ -132,9 +132,9 @@ public class DataService {
     }
     
     /**
-     * Инициализация БД примерами данных (только при первом запуске)
+     * Инициализация категорий по умолчанию (без транзакций)
      */
-    private void initializeDefaultData() {
+    private void initializeDefaultCategories() {
         Long userId = sessionManager.getCurrentUserId();
         
         // Создаём категории доходов
@@ -170,32 +170,6 @@ public class DataService {
         categoryCache.put(food.getId(), food);
         categoryCache.put(clothes.getId(), clothes);
         categoryCache.put(digital.getId(), digital);
-
-        // Создаём примеры транзакций
-        Transaction t1 = new Transaction("Получена зарплата", 50000, LocalDateTime.now().minusDays(5), salary, TransactionType.INCOME);
-        t1.setUserId(userId);
-        Transaction t2 = new Transaction("Премия за проект", 15000, LocalDateTime.now().minusDays(10), bonus, TransactionType.INCOME);
-        t2.setUserId(userId);
-        Transaction t3 = new Transaction("Стипендия", 3000, LocalDateTime.now().minusDays(1), scholarship, TransactionType.INCOME);
-        t3.setUserId(userId);
-        Transaction t4 = new Transaction("Покупка продуктов в супермаркете", -3500, LocalDateTime.now().minusDays(2), food, TransactionType.EXPENSE);
-        t4.setUserId(userId);
-        Transaction t5 = new Transaction("Новая куртка", -8000, LocalDateTime.now().minusDays(4), clothes, TransactionType.EXPENSE);
-        t5.setUserId(userId);
-        Transaction t6 = new Transaction("Подписка Netflix", -990, LocalDateTime.now().minusDays(7), digital, TransactionType.EXPENSE);
-        t6.setUserId(userId);
-        Transaction t7 = new Transaction("Покупка в магазине", -2100, LocalDateTime.now().minusDays(3), food, TransactionType.EXPENSE);
-        t7.setUserId(userId);
-        
-        transactionRepository.save(t1);
-        transactionRepository.save(t2);
-        transactionRepository.save(t3);
-        transactionRepository.save(t4);
-        transactionRepository.save(t5);
-        transactionRepository.save(t6);
-        transactionRepository.save(t7);
-        
-        transactions.addAll(t1, t2, t3, t4, t5, t6, t7);
     }
     
     /**
