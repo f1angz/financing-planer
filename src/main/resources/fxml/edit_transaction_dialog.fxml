@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.controller.EditTransactionController"
+      styleClass="dialog-container"
+      spacing="10" alignment="TOP_CENTER">
+
+    <Label text="Редактировать транзакцию" styleClass="dialog-title"/>
+
+    <!-- Тип транзакции -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Тип:" styleClass="dialog-label"/>
+        <ToggleButton fx:id="incomeButton" text="Доход" styleClass="dialog-toggle">
+            <toggleGroup>
+                <ToggleGroup fx:id="typeToggle"/>
+            </toggleGroup>
+        </ToggleButton>
+        <ToggleButton fx:id="expenseButton" text="Расход" toggleGroup="$typeToggle" styleClass="dialog-toggle"/>
+    </HBox>
+
+    <!-- Категория -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Категория:" styleClass="dialog-label"/>
+        <ComboBox fx:id="categoryComboBox" styleClass="dialog-combo-box"/>
+    </HBox>
+
+    <!-- Сумма -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Сумма:" styleClass="dialog-label"/>
+        <TextField fx:id="amountField" promptText="Введите сумму" styleClass="dialog-text-field"/>
+    </HBox>
+
+    <!-- Дата -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Дата:" styleClass="dialog-label"/>
+        <DatePicker fx:id="datePicker" styleClass="dialog-date-picker"/>
+    </HBox>
+
+    <!-- Описание -->
+    <VBox spacing="5">
+        <Label text="Описание:" styleClass="dialog-label"/>
+        <TextArea fx:id="descriptionArea" promptText="Введите описание (необязательно)" styleClass="dialog-text-area" prefHeight="50" wrapText="true"/>
+    </VBox>
+
+    <!-- Кнопки -->
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <VBox.margin>
+            <Insets top="5"/>
+        </VBox.margin>
+        <Button text="Отмена" onAction="#onCancel" styleClass="cancel-button" prefWidth="150"/>
+        <Button text="Сохранить" onAction="#onSave" styleClass="save-button" prefWidth="150"/>
+    </HBox>
+
+</VBox>
+

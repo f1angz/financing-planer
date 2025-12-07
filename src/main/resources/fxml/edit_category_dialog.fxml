@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.controller.EditCategoryController"
+      styleClass="dialog-container"
+      spacing="10" alignment="TOP_CENTER">
+
+    <Label text="Редактировать категорию" styleClass="dialog-title"/>
+
+    <!-- Название -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Название:" styleClass="dialog-label"/>
+        <TextField fx:id="nameField" styleClass="dialog-text-field"/>
+    </HBox>
+
+    <!-- Цвет -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Цвет:" styleClass="dialog-label"/>
+        <ColorPicker fx:id="colorPicker" styleClass="dialog-color-picker" prefWidth="300"/>
+    </HBox>
+
+    <!-- Кнопки -->
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <VBox.margin>
+            <Insets top="5"/>
+        </VBox.margin>
+        <Button text="Отмена" onAction="#onCancel" styleClass="cancel-button" prefWidth="150"/>
+        <Button text="Сохранить" onAction="#onSave" styleClass="save-button" prefWidth="150"/>
+    </HBox>
+
+</VBox>
+
