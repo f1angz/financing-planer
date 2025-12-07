@@ -8,18 +8,14 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.controller.AddTransactionController"
       styleClass="dialog-container"
-      spacing="20"
+      spacing="10"
       prefWidth="500">
-    
-    <padding>
-        <Insets top="25" right="30" bottom="25" left="30"/>
-    </padding>
 
     <!-- Заголовок -->
     <Label text="Новая транзакция" styleClass="dialog-title"/>
 
     <!-- Тип транзакции -->
-    <VBox spacing="8">
+    <VBox spacing="5">
         <Label text="Тип транзакции" styleClass="field-label"/>
         <HBox spacing="15">
             <ToggleButton fx:id="incomeButton" text="Доход" styleClass="type-toggle" prefWidth="150">
@@ -32,34 +28,34 @@
     </VBox>
 
     <!-- Категория -->
-    <VBox spacing="8">
+    <VBox spacing="5">
         <Label text="Категория" styleClass="field-label"/>
         <ComboBox fx:id="categoryCombo" promptText="Выберите категорию" maxWidth="Infinity" styleClass="dialog-combo"/>
     </VBox>
 
     <!-- Сумма -->
-    <VBox spacing="8">
+    <VBox spacing="5">
         <Label text="Сумма" styleClass="field-label"/>
         <TextField fx:id="amountField" promptText="0.00" styleClass="dialog-field"/>
     </VBox>
 
     <!-- Дата -->
-    <VBox spacing="8">
+    <VBox spacing="5">
         <Label text="Дата" styleClass="field-label"/>
         <DatePicker fx:id="datePicker" maxWidth="Infinity" styleClass="dialog-date-picker"/>
     </VBox>
 
     <!-- Описание -->
-    <VBox spacing="8">
+    <VBox spacing="5">
         <Label text="Описание" styleClass="field-label"/>
         <TextArea fx:id="descriptionArea" promptText="Комментарий к транзакции" 
-                  prefRowCount="3" wrapText="true" styleClass="dialog-text-area"/>
+                  prefHeight="50" wrapText="true" styleClass="dialog-text-area"/>
     </VBox>
 
     <!-- Кнопки -->
     <HBox spacing="15" alignment="CENTER_RIGHT">
         <VBox.margin>
-            <Insets top="10"/>
+            <Insets top="5"/>
         </VBox.margin>
         <Button text="Отмена" onAction="#onCancel" styleClass="cancel-button" prefWidth="150"/>
         <Button text="Добавить" onAction="#onSave" styleClass="save-button" prefWidth="150"/>

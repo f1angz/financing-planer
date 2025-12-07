@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.controller.SettingsController"
       styleClass="content-area"
       spacing="20">
     
@@ -14,7 +15,20 @@
     </padding>
 
     <Label text="Настройки" styleClass="page-title"/>
-    <Label text="Здесь будут настройки приложения" styleClass="placeholder-text"/>
+    
+    <!-- Секция аккаунта -->
+    <VBox spacing="15" styleClass="form-container">
+        <Label text="Аккаунт" styleClass="section-title"/>
+        
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Label text="Текущий пользователь:" styleClass="settings-label"/>
+            <Label fx:id="usernameLabel" text="" styleClass="settings-value"/>
+        </HBox>
+        
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Button text="Выйти из аккаунта" onAction="#onLogout" styleClass="logout-button" prefHeight="40"/>
+        </HBox>
+    </VBox>
 
 </VBox>
 

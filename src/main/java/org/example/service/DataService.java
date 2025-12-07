@@ -111,6 +111,15 @@ public class DataService {
         transactionRepository.save(transaction);
         transactions.add(transaction);
     }
+    
+    public void updateTransaction(Transaction transaction) {
+        transactionRepository.update(transaction);
+        // Обновляем в списке
+        int index = transactions.indexOf(transaction);
+        if (index >= 0) {
+            transactions.set(index, transaction);
+        }
+    }
 
     public void removeTransaction(Transaction transaction) {
         transactionRepository.delete(transaction);
@@ -122,6 +131,17 @@ public class DataService {
         category.setUserId(sessionManager.getCurrentUserId());
         categoryRepository.save(category);
         categories.add(category);
+        categoryCache.put(category.getId(), category);
+    }
+    
+    public void updateCategory(Category category) {
+        categoryRepository.update(category);
+        // Обновляем в списке
+        int index = categories.indexOf(category);
+        if (index >= 0) {
+            categories.set(index, category);
+        }
+        // Обновляем кэш
         categoryCache.put(category.getId(), category);
     }
 
@@ -138,38 +158,58 @@ public class DataService {
         Long userId = sessionManager.getCurrentUserId();
         
         // Создаём категории доходов
-        Category salary = new Category("Зарплатная плата", "#00FFA3", TransactionType.INCOME);
+        Category salary = new Category("Заработанная плата", "#00FFA3", TransactionType.INCOME);
         salary.setUserId(userId);
         Category bonus = new Category("Премия", "#00D9FF", TransactionType.INCOME);
         bonus.setUserId(userId);
-        Category scholarship = new Category("Стипендия", "#ADFF00", TransactionType.INCOME);
-        scholarship.setUserId(userId);
+        Category investments = new Category("Инвестиции", "#ADFF00", TransactionType.INCOME);
+        investments.setUserId(userId);
+        Category gift = new Category("Подарок", "#FFD700", TransactionType.INCOME);
+        gift.setUserId(userId);
         
         // Создаём категории расходов
-        Category food = new Category("Продукты питания", "#00FFA3", TransactionType.EXPENSE);
+        Category food = new Category("Продукты", "#FF4757", TransactionType.EXPENSE);
         food.setUserId(userId);
-        Category clothes = new Category("Одежда", "#00D9FF", TransactionType.EXPENSE);
-        clothes.setUserId(userId);
-        Category digital = new Category("Цифровые товары", "#FFEB3B", TransactionType.EXPENSE);
+        Category digital = new Category("Цифровые товары", "#FFA502", TransactionType.EXPENSE);
         digital.setUserId(userId);
+        Category sport = new Category("Спорт", "#1E90FF", TransactionType.EXPENSE);
+        sport.setUserId(userId);
+        Category utilities = new Category("Коммунальные услуги", "#48DBB4", TransactionType.EXPENSE);
+        utilities.setUserId(userId);
+        Category rent = new Category("Плата за квартиру", "#FF6348", TransactionType.EXPENSE);
+        rent.setUserId(userId);
+        Category credit = new Category("Кредит", "#9B59B6", TransactionType.EXPENSE);
+        credit.setUserId(userId);
+        Category taxes = new Category("Налоги", "#FF6B9D", TransactionType.EXPENSE);
+        taxes.setUserId(userId);
         
         // Сохраняем в БД
         categoryRepository.save(salary);
         categoryRepository.save(bonus);
-        categoryRepository.save(scholarship);
+        categoryRepository.save(investments);
+        categoryRepository.save(gift);
         categoryRepository.save(food);
-        categoryRepository.save(clothes);
         categoryRepository.save(digital);
+        categoryRepository.save(sport);
+        categoryRepository.save(utilities);
+        categoryRepository.save(rent);
+        categoryRepository.save(credit);
+        categoryRepository.save(taxes);
         
-        categories.addAll(salary, bonus, scholarship, food, clothes, digital);
+        categories.addAll(salary, bonus, investments, gift, food, digital, sport, utilities, rent, credit, taxes);
         
         // Обновляем кэш
         categoryCache.put(salary.getId(), salary);
         categoryCache.put(bonus.getId(), bonus);
-        categoryCache.put(scholarship.getId(), scholarship);
+        categoryCache.put(investments.getId(), investments);
+        categoryCache.put(gift.getId(), gift);
         categoryCache.put(food.getId(), food);
-        categoryCache.put(clothes.getId(), clothes);
         categoryCache.put(digital.getId(), digital);
+        categoryCache.put(sport.getId(), sport);
+        categoryCache.put(utilities.getId(), utilities);
+        categoryCache.put(rent.getId(), rent);
+        categoryCache.put(credit.getId(), credit);
+        categoryCache.put(taxes.getId(), taxes);
     }
     
     /**

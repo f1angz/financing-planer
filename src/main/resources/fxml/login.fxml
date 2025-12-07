@@ -17,7 +17,7 @@
             </padding>
 
             <!-- Лого/Заголовок -->
-            <Label text="Finance Planner" styleClass="login-title"/>
+            <Label text="FinPlan" styleClass="login-title"/>
             <Label text="Авторизация" styleClass="login-subtitle"/>
 
             <!-- Форма входа -->

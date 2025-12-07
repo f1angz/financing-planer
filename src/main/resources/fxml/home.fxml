@@ -16,23 +16,31 @@
         <Insets top="30" right="30" bottom="30" left="30"/>
     </padding>
 
-    <!-- Заголовок -->
-    <HBox alignment="CENTER_LEFT" spacing="20">
-        <Label text="Обзор финансов" styleClass="page-title"/>
-    </HBox>
+        <!-- Заголовок -->
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <Label text="Обзор финансов" styleClass="page-title"/>
+        </HBox>
 
-    <!-- Фильтры периода -->
-    <HBox spacing="20" alignment="CENTER_LEFT">
-        <ToggleButton fx:id="yearButton" text="Год" onAction="#onPeriodChanged" styleClass="period-toggle">
-            <toggleGroup>
-                <ToggleGroup fx:id="periodToggle"/>
-            </toggleGroup>
-        </ToggleButton>
-        <ToggleButton fx:id="monthButton" text="Месяц" toggleGroup="$periodToggle" onAction="#onPeriodChanged" styleClass="period-toggle"/>
-        <ToggleButton fx:id="dayButton" text="День" toggleGroup="$periodToggle" onAction="#onPeriodChanged" styleClass="period-toggle"/>
-        
-        <TextField fx:id="yearField" text="2025" prefWidth="100" styleClass="year-field"/>
-    </HBox>
+        <!-- Текущий баланс -->
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <Label text="Текущий баланс:" styleClass="balance-label"/>
+            <Label fx:id="balanceLabel" text="0.00 руб." styleClass="balance-amount"/>
+        </HBox>
+
+        <!-- Фильтры периода -->
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <ToggleButton fx:id="yearButton" text="Год" onAction="#onYearClicked" styleClass="period-toggle">
+                <toggleGroup>
+                    <ToggleGroup fx:id="periodToggle"/>
+                </toggleGroup>
+            </ToggleButton>
+            <ToggleButton fx:id="monthButton" text="Месяц" toggleGroup="$periodToggle" onAction="#onMonthClicked" styleClass="period-toggle"/>
+            <ToggleButton fx:id="dayButton" text="День" toggleGroup="$periodToggle" onAction="#onDayClicked" styleClass="period-toggle"/>
+            
+            <Label fx:id="periodLabel" text="" styleClass="period-label"/>
+            
+            <Button fx:id="resetButton" text="Сбросить" onAction="#onResetPeriod" styleClass="reset-button" visible="false" managed="false"/>
+        </HBox>
 
     <!-- Графики доходов и расходов -->
     <HBox spacing="30" VBox.vgrow="ALWAYS">
@@ -55,9 +63,10 @@
         
         <!-- Заголовки таблицы -->
         <HBox spacing="20" styleClass="transaction-header">
-            <Label text="Описание" styleClass="table-header" prefWidth="300"/>
+            <Label text="Категория" styleClass="table-header" prefWidth="200"/>
             <Label text="Дата" styleClass="table-header" prefWidth="150"/>
-            <Label text="Сумма" styleClass="table-header" prefWidth="120"/>
+            <Label text="Сумма" styleClass="table-header" prefWidth="130"/>
+            <Label text="Описание" styleClass="table-header" prefWidth="300"/>
         </HBox>
         
         <!-- Список транзакций -->

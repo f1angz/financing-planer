@@ -92,5 +92,19 @@ public class AuthService {
         BCrypt.Result result = verifyer.verify(password.toCharArray(), hash);
         return result.verified;
     }
+    
+    /**
+     * Выход из системы
+     */
+    public void logout() {
+        SessionManager sessionManager = SessionManager.getInstance();
+        DataService dataService = DataService.getInstance();
+        
+        // Очищаем сессию
+        sessionManager.logout();
+        
+        // Очищаем данные
+        dataService.clear();
+    }
 }
 

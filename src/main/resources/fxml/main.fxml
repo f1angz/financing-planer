@@ -21,7 +21,7 @@
             </padding>
             
             <!-- Заголовок приложения -->
-            <Label text="Finance Planner" styleClass="app-title">
+            <Label text="FinPlan" styleClass="app-title">
                 <VBox.margin>
                     <Insets bottom="30"/>
                 </VBox.margin>
