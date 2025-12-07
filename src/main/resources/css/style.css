@@ -545,4 +545,50 @@
     -fx-background-color: #1A3555;
 }
 
+/* ============================================ */
+/* Экраны авторизации и регистрации */
+/* ============================================ */
+.login-container {
+    -fx-background-color: #0D1B2E;
+    -fx-background-radius: 15;
+    -fx-padding: 30;
+}
+
+.login-title {
+    -fx-text-fill: #00FFA3;
+    -fx-font-size: 38px;
+    -fx-font-weight: bold;
+}
+
+.login-subtitle {
+    -fx-text-fill: #8B9FC5;
+    -fx-font-size: 18px;
+}
+
+.register-link {
+    -fx-text-fill: #00FFA3;
+    -fx-font-size: 15px;
+    -fx-underline: false;
+}
+
+.register-link:visited {
+    -fx-text-fill: #00FFA3;
+}
+
+.register-link:hover {
+    -fx-text-fill: #00E094;
+    -fx-underline: true;
+}
+
+.error-label {
+    -fx-text-fill: #FF6B6B;
+    -fx-font-size: 14px;
+    -fx-padding: 10;
+    -fx-background-color: rgba(255, 107, 107, 0.1);
+    -fx-background-radius: 6;
+    -fx-border-color: #FF6B6B;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+}
+
 

@@ -49,13 +49,28 @@ public class DatabaseManager {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
             
+            // Создаём таблицу пользователей
+            String createUsersTable = """
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL UNIQUE,
+                    password_hash TEXT NOT NULL,
+                    email TEXT,
+                    created_at TEXT NOT NULL
+                )
+            """;
+            
+            stmt.execute(createUsersTable);
+            
             // Создаём таблицу категорий
             String createCategoriesTable = """
                 CREATE TABLE IF NOT EXISTS categories (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT NOT NULL,
                     color TEXT NOT NULL,
-                    type TEXT NOT NULL
+                    type TEXT NOT NULL,
+                    user_id INTEGER NOT NULL,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
                 )
             """;
             
@@ -70,7 +85,9 @@ public class DatabaseManager {
                     date TEXT NOT NULL,
                     category_id INTEGER,
                     type TEXT NOT NULL,
-                    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+                    user_id INTEGER NOT NULL,
+                    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
                 )
             """;
             

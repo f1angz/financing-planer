@@ -10,6 +10,7 @@ public class Transaction {
     private Category category;
     private Long categoryId;  // Для связи с БД
     private TransactionType type;
+    private Long userId;
 
     public Transaction(String description, double amount, LocalDateTime date, Category category, TransactionType type) {
         this.description = description;
@@ -27,6 +28,16 @@ public class Transaction {
         this.date = date;
         this.categoryId = categoryId;
         this.type = type;
+    }
+
+    public Transaction(Long id, String description, double amount, LocalDateTime date, Long categoryId, TransactionType type, Long userId) {
+        this.id = id;
+        this.description = description;
+        this.amount = amount;
+        this.date = date;
+        this.categoryId = categoryId;
+        this.type = type;
+        this.userId = userId;
     }
 
     public Long getId() {
@@ -84,6 +95,14 @@ public class Transaction {
 
     public void setType(TransactionType type) {
         this.type = type;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
 
